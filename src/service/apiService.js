@@ -1,16 +1,5 @@
 const baseUrl = "https://fakestoreapi.com/";
 
-export const fetchProductByID = async (id) => {
-  try {
-    const url = baseUrl + `products/${id}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    return data;
-  } catch (e) {
-    throw new Error("Can't find product.");
-  }
-};
-
 export const fetchCategories = async () => {
   try {
     const url = baseUrl + `products/categories`;
@@ -27,7 +16,7 @@ export const fetchProductList = async (category) => {
     const url = baseUrl + `products/category/${category}`;
     const res = await fetch(url);
     const data = await res.json();
-    return data;
+    return data.map((item) => ({ id: item.id, title: item.title }));
   } catch (e) {
     throw new Error("Can't find product.");
   }
