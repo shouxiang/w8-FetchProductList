@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from "react-native";
-import { loadProductList, selectProductList } from "../redux/productListSlice";
+import { loadProductList, selectDic } from "../redux/productSlice";
 
 const Home = () => {
   const categories = [
@@ -18,15 +18,13 @@ const Home = () => {
   ];
 
   const dispatch = useDispatch();
-  const { productList, loading, error } = useSelector(selectProductList);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const { dic, loading, error } = useSelector(selectDic);
 
   const handleClick = (category) => {
     dispatch(loadProductList(category));
+    setSelectedCategory(category);
   };
-
-  useEffect(() => {
-    console.log(productList);
-  }, [productList]);
 
   return (
     <View style={styles.container}>
@@ -47,7 +45,7 @@ const Home = () => {
         ) : error ? (
           <Text>Error: {error}</Text>
         ) : (
-          productList?.map((product, index) => (
+          dic[selectedCategory]?.map((product, index) => (
             <Text key={index} style={{ borderWidth: 1 }}>
               {product?.title}
             </Text>
