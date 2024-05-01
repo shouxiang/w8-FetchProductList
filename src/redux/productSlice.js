@@ -9,11 +9,8 @@ const initialState = {
 
 export const loadProductList = createAsyncThunk(
   "loadProductList",
-  async (category, { rejectWithValue, getState }) => {
+  async (category, { rejectWithValue }) => {
     if (!category) return rejectWithValue("Category can't be empty.");
-    const productArr = getState().product.dic[category];
-    console.log(getState().product.dic);
-    if (productArr) return { category, productArr };
 
     try {
       const productArr = await fetchProductList(category);
@@ -22,6 +19,9 @@ export const loadProductList = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.message);
     }
+  },
+  {
+    condition: (category, { getState }) => !getState().product.dic[category],
   }
 );
 
@@ -39,7 +39,7 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = null;
         const { category, productArr } = action.payload;
-        if (!state.dic[category]) state.dic[category] = productArr;
+        state.dic[category] = productArr;
       })
       .addCase(loadProductList.rejected, (state, action) => {
         state.loading = false;
